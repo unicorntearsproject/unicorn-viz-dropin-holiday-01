@@ -181,7 +181,7 @@ class America250(BaseEffect):
 
     NAME = 'America 250'
     AUTHOR = 'unicorn-viz drop-in'
-    TAGS = ['holiday', 'america', 'patriotic', 'fireworks']
+    TAGS = ['holiday', 'america', 'patriotic', 'fireworks', 'energetic']
     PING_PONG_FRIENDS = ['Disco Ball', 'Grand Finale', 'Fireworks', 'Starfield']
 
     def _init(self) -> None:

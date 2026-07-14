@@ -7,6 +7,8 @@ and camera pulse.
 """
 from __future__ import annotations
 
+__version__ = '0.5.0'
+
 import moderngl
 
 from unicornviz.effects.base import AudioData, BaseEffect

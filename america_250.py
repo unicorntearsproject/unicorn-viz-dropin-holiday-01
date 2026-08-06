@@ -7,7 +7,7 @@ and camera pulse.
 """
 from __future__ import annotations
 
-__version__ = '0.5.0'
+__version__ = '0.5.1'
 
 import moderngl
 
@@ -132,7 +132,10 @@ void main() {
     col += fireworks(uv, t, react) * (0.67 + iGlow * 0.22);
     vec2 cell = floor((uv + vec2(1.8, 1.0)) * vec2(48.0, 28.0));
     vec2 local = fract((uv + vec2(1.8, 1.0)) * vec2(48.0, 28.0)) - 0.5;
-    float sparkle = step(0.992 - iTreble * 0.006, hash(cell + floor(t * 3.0)));
+    // mod() before the hash: floor(t*3) at large start phases exceeds
+    // float32's 2^23 inside hash(), degrading the treble sparkle into
+    // stuck/banded cells (audit 2026-08-03 §8 Class B).
+    float sparkle = step(0.992 - iTreble * 0.006, hash(cell + floor(mod(t, 2048.0) * 3.0)));
     col += white * sparkle * exp(-dot(local, local) * 26.0) * (0.16 + iTreble * 0.66);
 
     // Monumental 250 numerals.
@@ -147,7 +150,7 @@ void main() {
     vec2 num_local = fract((p + vec2(1.2, 0.72)) * vec2(62.0, 34.0)) - 0.5;
     float inner_wave = 0.5 + 0.5 * sin(p.x * 24.0 - p.y * 18.0 + t * 4.8 + iSeed * TAU);
     float inner_ribbon = smoothstep(0.07, 0.0, abs(fract(p.x * 4.5 + p.y * 3.2 - t * 0.85) - 0.5));
-    float inner_spark = step(0.974 - iTreble * 0.012, hash(num_cell + floor(t * 9.0)))
+    float inner_spark = step(0.974 - iTreble * 0.012, hash(num_cell + floor(mod(t, 1024.0) * 9.0)))
         * exp(-dot(num_local, num_local) * 68.0);
     float d2_outer = sevenSeg((p - vec2(-0.42, -0.14)) / 0.62, 2);
     float d5_outer = sevenSeg((p - vec2( 0.00, -0.14)) / 0.62, 5);
